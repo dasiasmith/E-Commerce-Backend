@@ -9,17 +9,22 @@ router.get('/', (req, res) => {
   // be sure to include its associated Category and Tag data
   Product.findAll({
     include: [
-      Category,
+      {
+        model: Category,
+        attributes: ['id', 'category_name'],
+      },
       {
         model: Tag,
+        attributes: ['id', 'tag_name'],
         through: ProductTag,
-      },
-    ],
+        as: 'tags'
+      }
+    ]
   })
-  .then((categories) => {
-    res.json(categories)
+  .then((product) => {
+    res.json(product)
   })
-  .cathc((err) => {
+  .catch((err) => {
     res.status(500).json(err)
   });
 });
@@ -30,21 +35,30 @@ router.get('/:id', (req, res) => {
   // be sure to include its associated Category and Tag data
   Product.findOne({
     where: {
-      id: req.params.id,
+      id: req.params.id
     },
-    include: [
-      Category,
-      {
-        model: Tag,
-        through: ProductTag,
-      },
-    ],
+    include: [{
+      model: Category,
+      attributes: ['id', 'category_name']
+    },
+    {
+      model: Tag,
+      attributes: ['id', 'tag_name'],
+      through: ProductTag,
+      as: 'tags'
+    }]
   })
-  .then((products) => res.json(products))
-  .catch((err) => {
-    console.log(err);
-    res.status(400).json(err);
-  });
+    .then(product => {
+      if (!product) {
+        res.status(404).json({ message: 'No products found with this id' });
+        return;
+      }
+      res.json(product);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 // create new product
@@ -120,13 +134,16 @@ router.delete('/:id', (req, res) => {
       id: req.params.id
     }
   })
-  .then((products) => {
-    console.log(products);
-    res.json(products);
+  .then((product) => {
+    if (!product) {
+      res.status(404).json({ message: 'No product found with this id' });
+      return;
+    }
+    res.json(product);
   })
-  .catch((err) => {
+  .catch(err => {
     console.log(err);
-    res.status(400).json(err);
+    res.status(500).json(err);
   });
 });
 
