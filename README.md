@@ -5,6 +5,8 @@
   ## Description
 
   This application replicates the backend for an e-commerce site. It allows users to access all products, product catagories, and tags that correspond to each product utilizing Express.js API to use Sequelize to interact with a MySQL database.
+  
+  Link to the demo video: https://drive.google.com/file/d/1zfapb6eyyyn71UojOaOsc1rESe35EfPq/view?usp=sharing
 
   ## Table of Contents
 
